@@ -42,20 +42,6 @@ Each skin is completely **independent and decoupled**—install and position eit
 
 ---
 
-## ⚡ Feature Comparison
-
-| Feature | `antigravity-limits` (Quota HUD) | `antigravity-context` (Context HUD) |
-| :--- | :--- | :--- |
-| **Primary Metric** | Quotas & Rate Limits (5h & Weekly) | Token Usage & Context Window Occupancy |
-| **Monitored Scope** | Unlimited Google Accounts | Top 3 / 5 / 8 Recent Antigravity Conversations |
-| **Supported Models** | Gemini, Claude & GPT, Gemini 4 Argon | Gemini (`1M`), Claude / GPT (`200k`), Custom Models |
-| **Update Mechanism** | Configurable REST Polling (5m default) | Zero-Network Local Log Polling (4s default) |
-| **Special Features** | Windows Account Manager UI, DPAPI encryption, 1-click active IDE account switch, token expiration warnings | Automatic `/compact` detection, native sidebar titles via protobuf, swarm worker filtering, multi-profile scanning |
-| **UI Themes** | Obsidian (Dark) & Frost (Light) | Obsidian (Dark) & Frost (Light) |
-| **Interactive Controls** | Mouse wheel opacity, row expansion, model pinning | Mouse wheel opacity, Top 3/5/8 selector, collapse mode, hover diagnostic tooltips |
-
----
-
 ## 🚀 Getting Started
 
 ### Prerequisites
