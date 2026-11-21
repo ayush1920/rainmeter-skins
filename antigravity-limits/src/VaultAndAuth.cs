@@ -97,6 +97,89 @@ public static class VaultAndAuth
     {
         byte[] raw = Encoding.UTF8.GetBytes(Json.Serialize(list));
         File.WriteAllBytes(VaultPath, ProtectedData.Protect(raw, null, DataProtectionScope.CurrentUser));
+        SyncToMultiGravity(list);
+    }
+
+    public static void SyncToMultiGravity(List<AccountRecord> list)
+    {
+        try
+        {
+            string profDir = null;
+            string pointer = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AntigravityQuota", "multigravity_profiles.txt");
+            if (File.Exists(pointer))
+            {
+                try { profDir = File.ReadAllText(pointer, Encoding.UTF8).Trim(); } catch { }
+            }
+
+            if (string.IsNullOrEmpty(profDir) || !Directory.Exists(profDir))
+            {
+                string cfg = @"C:\Users\Ayush\Desktop\Projects\gemini_profile\profile_swithc_sol\MultiGravity-Multi-Profile-Manager-for-Antigravity\config.json";
+                if (File.Exists(cfg))
+                {
+                    try
+                    {
+                        Dictionary<string, object> dict = Json.Deserialize<Dictionary<string, object>>(File.ReadAllText(cfg));
+                        if (dict != null && dict.ContainsKey("profiles_dir")) profDir = Convert.ToString(dict["profiles_dir"]);
+                    }
+                    catch { }
+                }
+            }
+
+            if (string.IsNullOrEmpty(profDir) || !Directory.Exists(profDir))
+            {
+                string fallback = @"C:\Users\Ayush\Downloads\Programs\profiles";
+                if (Directory.Exists(fallback)) profDir = fallback;
+            }
+
+            if (string.IsNullOrEmpty(profDir) || !Directory.Exists(profDir)) return;
+
+            string[] subdirs = Directory.GetDirectories(profDir);
+
+            foreach (AccountRecord a in list)
+            {
+                if (string.IsNullOrEmpty(a.RawBlob) || string.IsNullOrEmpty(a.Email)) continue;
+
+                string targetProfilePath = null;
+
+                foreach (string d in subdirs)
+                {
+                    string dname = Path.GetFileName(d);
+                    if (string.Equals(dname, a.Label, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(dname, a.Email, StringComparison.OrdinalIgnoreCase))
+                    {
+                        targetProfilePath = d;
+                        break;
+                    }
+
+                    string tf = Path.Combine(d, "home", ".gemini", "jetski-standalone-oauth-token");
+                    if (File.Exists(tf))
+                    {
+                        try
+                        {
+                            string raw = File.ReadAllText(tf);
+                            if (raw.IndexOf(a.Email, StringComparison.OrdinalIgnoreCase) >= 0)
+                            {
+                                targetProfilePath = d;
+                                break;
+                            }
+                        }
+                        catch { }
+                    }
+                }
+
+                if (targetProfilePath != null)
+                {
+                    try
+                    {
+                        string tokenFile = Path.Combine(targetProfilePath, "home", ".gemini", "jetski-standalone-oauth-token");
+                        Directory.CreateDirectory(Path.GetDirectoryName(tokenFile));
+                        File.WriteAllText(tokenFile, a.RawBlob, new UTF8Encoding(false));
+                    }
+                    catch { }
+                }
+            }
+        }
+        catch { }
     }
 
     public static AccountRecord LoginInBrowser(string customLabel)
