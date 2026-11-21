@@ -1,5 +1,5 @@
 @echo off
-setlocal enabledelayedexpansion
+setlocal
 title Antigravity Limits - Rainmeter Skin Installer
 cd /d "%~dp0"
 
@@ -60,6 +60,9 @@ if not defined SKIN_PATH (
     exit /b 1
 )
 
+:: Strip surrounding quotes if user entered them via drag-and-drop
+set "SKIN_PATH=%SKIN_PATH:"=%"
+
 :: Remove trailing slash if present
 if "%SKIN_PATH:~-1%"=="\" set "SKIN_PATH=%SKIN_PATH:~0,-1%"
 
@@ -83,26 +86,9 @@ set "RES_DIR=%TARGET_DIR%\@Resources"
 
 if not exist "skin\@Resources\AntigravityBridge.exe" (
     echo [*] AntigravityBridge.exe not found in prebuilt folder. Compiling from source...
-    set "CSC=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
-    if not exist "!CSC!" set "CSC=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\csc.exe"
-    
-    if not exist "!CSC!" (
-        echo [ERROR] .NET Framework C# compiler (csc.exe) not found.
-        pause
-        exit /b 1
-    )
-    
-    if not exist "skin\@Resources" mkdir "skin\@Resources"
-    pushd src
-    "!CSC!" /nologo /optimize+ /target:winexe /main:Program ^
-      /out:"..\skin\@Resources\AntigravityBridge.exe" ^
-      /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll ^
-      /r:System.Security.dll /r:System.Management.dll /r:System.Web.Extensions.dll ^
-      AccountDialog.cs AccountManagerForm.cs VaultAndAuth.cs QuotaPoller.cs Program.cs
-    popd
-    
+    call "%~dp0src\build.bat"
     if not exist "skin\@Resources\AntigravityBridge.exe" (
-        echo [ERROR] Compilation failed.
+        echo [ERROR] Compilation failed. Please check your .NET Framework installation.
         pause
         exit /b 1
     )
@@ -122,14 +108,7 @@ copy /y "skin\@Resources\AccountsMeters.inc" "%RES_DIR%\" >nul
 copy /y "skin\@Resources\AntigravityBridge.exe" "%RES_DIR%\" >nul
 
 :: Create initial LiveQuota.inc and UserState.inc if they don't exist
-powershell -NoProfile -Command "
-$res = '%RES_DIR%';
-$utf16 = New-Object System.Text.UnicodeEncoding($false, $true);
-$live = Join-Path $res 'LiveQuota.inc';
-$state = Join-Path $res 'UserState.inc';
-if (-not (Test-Path $live)) { [System.IO.File]::WriteAllText($live, \"[Variables]`r`nAccCount=0`r`n\", $utf16) }
-if (-not (Test-Path $state)) { [System.IO.File]::WriteAllText($state, \"[Variables]`r`nTheme=obsidian`r`nWidgetAlpha=155`r`n\", $utf16) }
-"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$res = [System.Environment]::ExpandEnvironmentVariables('%RES_DIR%'); $utf16 = New-Object System.Text.UnicodeEncoding($false, $true); $live = Join-Path $res 'LiveQuota.inc'; $state = Join-Path $res 'UserState.inc'; if (-not (Test-Path $live)) { [System.IO.File]::WriteAllText($live, \"[Variables]`r`nAccCount=0`r`n\", $utf16) }; if (-not (Test-Path $state)) { [System.IO.File]::WriteAllText($state, \"[Variables]`r`nTheme=obsidian`r`nWidgetAlpha=155`r`n\", $utf16) }"
 
 echo [+] Files deployed successfully to:
 echo     "%TARGET_DIR%"
@@ -144,9 +123,9 @@ if not exist "%RM_EXE%" set "RM_EXE=%ProgramFiles(x86)%\Rainmeter\Rainmeter.exe"
 if exist "%RM_EXE%" (
     echo [*] Refreshing Rainmeter and activating AntigravityQuota HUD...
     "%RM_EXE%" !RefreshApp
-    timeout /t 1 /nobreak >nul
+    ping -n 2 127.0.0.1 >nul
     "%RM_EXE%" !ActivateConfig "AntigravityQuota\QuotaHUD" "QuotaHUD.ini"
-    timeout /t 1 /nobreak >nul
+    ping -n 2 127.0.0.1 >nul
     "%RM_EXE%" !Refresh "AntigravityQuota\QuotaHUD"
     echo [+] Skin activated!
 ) else (
