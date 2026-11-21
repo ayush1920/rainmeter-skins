@@ -17,6 +17,7 @@ A curated collection of modern, functional, and developer-centric desktop HUDs a
 | Skin | Description | Quick Link |
 | :--- | :--- | :--- |
 | **`antigravity-limits`** | Real-time desktop telemetry HUD for **Google Antigravity** quotas (Gemini, Claude & GPT, Gemini 4 Argon) across unlimited Google accounts with a dedicated Windows Account Manager. | [View Skin & Setup](antigravity-limits/README.md) |
+| **`antigravity-context`** | Standalone real-time **Context Window HUD** for Google Antigravity Desktop showing Top 3 / 5 / 8 recent conversations, live token counts (`1M` / `200k` window), active models, and `/compact` history. | [View Skin & Setup](antigravity-context/README.md) |
 
 ---
 
