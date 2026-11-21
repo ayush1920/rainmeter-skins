@@ -31,11 +31,15 @@ public static class QuotaPoller
 
     public static void PollAll(List<AccountRecord> accounts)
     {
+        bool anyVisible = false;
         foreach (AccountRecord acc in accounts)
         {
+            if (!acc.IsVisible) continue;
+            anyVisible = true;
             VaultAndAuth.RefreshIfNeeded(acc);
             PollCloudCode(acc);
         }
+        if (!anyVisible) return;
 
         string csrf;
         int port = FindLanguageServer(out csrf);
@@ -45,7 +49,7 @@ public static class QuotaPoller
         Dictionary<string, object> st = QueryLs(port, csrf, "/exa.language_server_pb.LanguageServerService/GetUserStatus", "{\"metadata\":{\"ideName\":\"antigravity\",\"extensionName\":\"antigravity\",\"locale\":\"en\"}}");
 
         AccountRecord target = MatchAccount(accounts, st);
-        if (target != null) ApplyLsData(target, sum, st);
+        if (target != null && target.IsVisible) ApplyLsData(target, sum, st);
     }
 
     private static AccountRecord MatchAccount(List<AccountRecord> accounts, Dictionary<string, object> st)

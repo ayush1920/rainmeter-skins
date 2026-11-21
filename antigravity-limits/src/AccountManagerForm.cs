@@ -89,7 +89,7 @@ public class AccountManagerForm : Form
                 if (accounts[idx].IsVisible != e.Item.Checked)
                 {
                     accounts[idx].IsVisible = e.Item.Checked;
-                    SyncAndRefreshHud(false, idx);
+                    SyncAndRefreshHud(accounts[idx].IsVisible, idx);
                 }
             }
         };
@@ -236,6 +236,10 @@ public class AccountManagerForm : Form
             {
                 statusTxt = "[!] TOKEN EXPIRED";
             }
+            else if (!a.IsVisible)
+            {
+                statusTxt = "Hidden (not polled)";
+            }
             else
             {
                 string gPct = ((int)Math.Round(a.GFiveH * 100.0)) + "%";
@@ -252,6 +256,11 @@ public class AccountManagerForm : Form
                 item.UseItemStyleForSubItems = false;
                 subStatus.ForeColor = accentRed;
                 subStatus.Font = new Font(listView.Font, FontStyle.Bold);
+            }
+            else if (!a.IsVisible)
+            {
+                item.UseItemStyleForSubItems = false;
+                subStatus.ForeColor = subColor;
             }
             listView.Items.Add(item);
         }
