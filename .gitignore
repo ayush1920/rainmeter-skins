@@ -1,0 +1,12 @@
+# Rainmeter user runtime data
+**/@Resources/LiveQuota.inc
+**/@Resources/UserState.inc
+vault.dat
+
+# Build artifacts
+*.obj
+*.pdb
+*.suo
+*.user
+bin/
+obj/
