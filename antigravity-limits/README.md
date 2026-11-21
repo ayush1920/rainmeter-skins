@@ -12,13 +12,13 @@ A modern, high-performance desktop telemetry HUD for **Google Antigravity** user
 
 ## 📸 Previews
 
-| Collapsed HUD | Expanded Detailed View |
+| Compressed Mode | Expanded Detailed View |
 | :---: | :---: |
-| ![Collapsed HUD](screenshots/hud_collapsed.png) | ![Expanded HUD](screenshots/hud_expanded.png) |
+| <img src="screenshots/hud_collapsed.png" width="300" alt="Collapsed HUD" /> | <img src="screenshots/hud_expanded.png" width="300" alt="Expanded HUD" /> |
 
 | Account Manager UI | Token Expired Alert |
 | :---: | :---: |
-| ![Account Manager](screenshots/account_manager.png) | ![Token Expired Alert](screenshots/hud_expired.png) |
+| <img src="screenshots/account_manager.png" width="440" alt="Account Manager" /> | <img src="screenshots/hud_expired.png" width="300" alt="Token Expired Alert" /> |
 
 ---
 

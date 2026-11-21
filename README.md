@@ -4,6 +4,14 @@ A curated collection of modern, functional, and developer-centric desktop HUDs a
 
 ---
 
+## 📸 Previews (`antigravity-limits`)
+
+| Compressed Mode | Expanded Mode |
+| :---: | :---: |
+| <img src="antigravity-limits/screenshots/hud_collapsed.png" width="300" alt="Compressed HUD" /> | <img src="antigravity-limits/screenshots/hud_expanded.png" width="300" alt="Expanded HUD" /> |
+
+---
+
 ## 📦 Available Skins
 
 | Skin | Description | Quick Link |
